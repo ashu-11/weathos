@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "seed:export": "node src/seed-export.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

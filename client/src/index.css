@@ -39,6 +39,9 @@ a { color: inherit; text-decoration: none; }
 .main-area  { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .topbar     { height: 52px; border-bottom: 1px solid var(--ink-6); display: flex; align-items: center; gap: 12px; padding: 0 28px; flex-shrink: 0; }
 .page-body  { flex: 1; overflow-y: auto; }
+.menu-btn { display: none; width: 34px; height: 34px; border: 1px solid var(--ink-6); border-radius: 8px; background: var(--p2); align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+.menu-btn span { width: 14px; height: 1.5px; background: var(--ink-2); border-radius: 2px; }
+.mobile-overlay { display: none; }
 
 /* ── SIDEBAR ─────────────────────────────────────────── */
 .sidebar-logo   { padding: 22px 22px 18px; border-bottom: 1px solid var(--ink-6); }
@@ -316,3 +319,96 @@ a { color: inherit; text-decoration: none; }
 .ph   { padding: 0 24px; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ───────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .search-box { width: 180px; }
+  .stat-cell { padding: 14px 16px; }
+  .data-table th, .data-table td { padding-left: 14px; padding-right: 14px; }
+}
+
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; height: auto; }
+  .col { border-right: none; border-bottom: 1px solid var(--ink-6); max-height: none; overflow: visible; }
+  .col:last-child { border-bottom: none; }
+  .stat-strip { flex-wrap: wrap; }
+  .stat-cell { min-width: 50%; border-right: none; border-bottom: 1px solid var(--ink-6); }
+  .stat-cell:nth-last-child(-n+2) { border-bottom: none; }
+  .sim-metrics { flex-wrap: wrap; gap: 14px; }
+  .sim-m { min-width: calc(50% - 7px); }
+  .sim-m + .sim-m { border-left: none; margin-left: 0; padding-left: 0; }
+  .cust-kpis { flex-wrap: wrap; gap: 10px; }
+  .ck { min-width: calc(50% - 5px); }
+  .ck + .ck { border-left: none; margin-left: 0; padding-left: 0; }
+  .form-grid { grid-template-columns: 1fr; }
+  .chat-input-bar { padding: 10px 14px 12px; }
+}
+
+@media (max-width: 768px) {
+  .app-shell { position: relative; }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform .2s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  }
+  .mobile-sidebar-open .sidebar { transform: translateX(0); }
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: rgba(17, 17, 16, .35);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .mobile-sidebar-open .mobile-overlay { opacity: 1; pointer-events: auto; }
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+    height: 56px;
+  }
+  .menu-btn { display: inline-flex; }
+  .topbar-title { font-size: 16px; }
+  .search-box { width: auto; flex: 1; min-width: 0; padding: 7px 10px; }
+  .search-box input { font-size: 12px; }
+  .btn { padding: 8px 12px; font-size: 11px; }
+  .page-body { padding-bottom: 14px; }
+  .ph, .sec-label, .row-item, .work-item, .cust-header, .goal-row, .alert-item, .script-wrap,
+  .sim-num, .sim-sub, .sim-metrics, .chip-row, .chat-msgs, .chat-suggestions,
+  .log-item, .form-section, .note-box {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+  .sim-num { font-size: 34px; padding-top: 14px !important; }
+  .card { padding: 14px; border-radius: 10px; }
+  .card-title { font-size: 15px; }
+  .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .cust-name { font-size: 19px; }
+  .cust-actions { flex-direction: column; }
+  .ca-btn, .wi-btn { width: 100%; }
+  .wi-actions { flex-direction: column; }
+  .chat-msgs { gap: 10px; }
+  .msg-bubble { max-width: 92%; font-size: 12px; }
+  .auth-page { flex-direction: column; }
+  .auth-left { width: 100%; min-height: 220px; padding: 30px 20px; }
+  .auth-brand-name { font-size: 28px; }
+  .auth-quote { margin-top: 26px; font-size: 13px; }
+  .auth-right { padding: 22px 16px 28px; align-items: flex-start; }
+  .auth-box { max-width: 100%; }
+  .sso-row { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .topbar .btn-dark { display: none; }
+  .search-box { max-width: 56vw; }
+  .stat-cell { min-width: 100%; }
+  .sim-m { min-width: 100%; }
+  .goal-top { flex-direction: column; gap: 6px; }
+}

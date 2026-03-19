@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { seedFromCollection } = require('./seed');
 
 const app = express();
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
@@ -12,10 +13,14 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isLocalDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):3000$/.test(origin || '');
+
+    if (!origin || allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && isLocalDevOrigin)) {
       return callback(null, true);
     }
-    return callback(new Error('Not allowed by CORS'));
+
+    // Avoid returning a 500 for blocked origins. Browser will block CORS response.
+    return callback(null, false);
   },
   credentials: true,
 }));
@@ -46,8 +51,9 @@ async function start() {
     console.log('✓ MongoDB in-memory running at', uri);
   }
 
-  // Seed data
-  await require('./seed')();
+  if (process.env.AUTO_SEED === 'true') {
+    await seedFromCollection();
+  }
 
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => console.log(`✓ WealthOS API on http://localhost:${PORT}`));

@@ -26,6 +26,7 @@ export default function AppShell() {
   const { rm, logout } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: alerts } = useFetch(
     useCallback(() => alertAPI.list(), [])
@@ -40,7 +41,7 @@ export default function AppShell() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${sidebarOpen ? ' mobile-sidebar-open' : ''}`}>
       {/* ── SIDEBAR ── */}
       <aside className="sidebar">
         <div className="sidebar-logo">
@@ -60,6 +61,7 @@ export default function AppShell() {
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+                onClick={() => setSidebarOpen(false)}
               >
                 <item.Icon />
                 {item.label}
@@ -76,16 +78,33 @@ export default function AppShell() {
             <div style={{ fontSize: 10, color: 'var(--ink-4)' }}>{rm?.role?.toUpperCase()} · {rm?.branch}</div>
           </div>
           <button
-            onClick={logout}
+            onClick={() => {
+              setSidebarOpen(false);
+              logout();
+            }}
             style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--ink-5)', fontSize: 11, cursor: 'pointer' }}
             title="Sign out"
           >⏻</button>
         </div>
       </aside>
+      <button
+        className="mobile-overlay"
+        aria-label="Close menu"
+        onClick={() => setSidebarOpen(false)}
+      />
 
       {/* ── MAIN ── */}
       <div className="main-area">
         <header className="topbar">
+          <button
+            className="menu-btn"
+            aria-label="Open menu"
+            onClick={() => setSidebarOpen((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
           <div className="topbar-title" id="page-title">WealthOS</div>
 
           <div className="search-box">

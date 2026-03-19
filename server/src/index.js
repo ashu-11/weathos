@@ -5,7 +5,20 @@ const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
@@ -21,10 +34,17 @@ app.use('/api/audit',       require('./routes/audit'));
 app.get('/api/health', (_, res) => res.json({ status: 'ok', db: mongoose.connection.readyState }));
 
 async function start() {
-  const mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
-  await mongoose.connect(uri);
-  console.log('✓ MongoDB in-memory running at', uri);
+  let uri = process.env.MONGODB_URI;
+
+  if (uri) {
+    await mongoose.connect(uri);
+    console.log('✓ MongoDB connected from MONGODB_URI');
+  } else {
+    const mongod = await MongoMemoryServer.create();
+    uri = mongod.getUri();
+    await mongoose.connect(uri);
+    console.log('✓ MongoDB in-memory running at', uri);
+  }
 
   // Seed data
   await require('./seed')();

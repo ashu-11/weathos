@@ -33,6 +33,18 @@ npm start
 # Opens http://localhost:3000
 ```
 
+## Production environment variables
+
+### Server (`server`)
+- `NODE_ENV=production`
+- `PORT=4000` (optional on Render; platform usually sets this)
+- `JWT_SECRET=<strong-random-secret>`
+- `MONGODB_URI=<your-mongodb-atlas-uri>`
+- `CORS_ORIGIN=<your-vercel-url>` (for multiple: comma-separated)
+
+### Client (`client`)
+- `REACT_APP_API_URL=<your-render-backend-url>`
+
 ## Login credentials
 | Email | Password | Role |
 |-------|----------|------|
